@@ -16,9 +16,9 @@ public:
       return false;
    }
    
-   static bool KeyExists(BSTNode** visited, int count, int key, BSTNode* skipNode) {
+   static bool KeyExists(BSTNode** visited, int count, int key) {
       for (int i = 0; i < count; i++) {
-         if (visited[i] != skipNode && visited[i]->key == key) {
+         if (visited[i]->key == key) {
             return true;
          }
       }
@@ -36,11 +36,6 @@ public:
          return node;
       }
       
-      // Check if this key already exists (duplicate key problem)
-      if (KeyExists(visited, *visitCount, node->key, node)) {
-         return node;
-      }
-      
       // Check min constraint: all nodes in right subtree must be > parent
       // So if we have a min, this node must be > min
       if (min != nullptr && node->key <= *min) {
@@ -50,6 +45,12 @@ public:
       // Check max constraint: all nodes in left subtree must be < parent
       // So if we have a max, this node must be < max
       if (max != nullptr && node->key >= *max) {
+         return node;
+      }
+      
+      // Check if this key already exists (duplicate key problem)
+      // Check BEFORE adding current node to visited
+      if (KeyExists(visited, *visitCount, node->key)) {
          return node;
       }
       
@@ -93,4 +94,5 @@ public:
    }
 };
 #endif
+
 
