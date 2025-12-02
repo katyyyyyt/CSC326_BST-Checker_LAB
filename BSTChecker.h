@@ -16,20 +16,30 @@ public:
       return false;
    }
    
+   static bool KeyExists(BSTNode** visited, int count, int key, BSTNode* skipNode) {
+      for (int i = 0; i < count; i++) {
+         if (visited[i] != skipNode && visited[i]->key == key) {
+            return true;
+         }
+      }
+      return false;
+   }
+   
    static BSTNode* IsValid(BSTNode* node, int* min, int* max, 
                            BSTNode** visited, int* visitCount) {
       if (node == nullptr) {
          return nullptr;
       }
       
-      // Check if this node has been visited before (catches structural problems)
+      // Check if this node has been visited before (structural problem)
       if (HasBeenVisited(visited, *visitCount, node)) {
          return node;
       }
       
-      // Mark node as visited
-      visited[*visitCount] = node;
-      (*visitCount)++;
+      // Check if this key already exists (duplicate key problem)
+      if (KeyExists(visited, *visitCount, node->key, node)) {
+         return node;
+      }
       
       // Check min constraint (node must be greater than min)
       if (min != nullptr && node->key <= *min) {
@@ -40,6 +50,10 @@ public:
       if (max != nullptr && node->key >= *max) {
          return node;
       }
+      
+      // Mark node as visited AFTER all checks on current node
+      visited[*visitCount] = node;
+      (*visitCount)++;
       
       // Preorder traversal: check left subtree first
       BSTNode* leftViolation = IsValid(node->left, min, &node->key, visited, visitCount);
