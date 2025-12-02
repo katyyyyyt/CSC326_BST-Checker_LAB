@@ -41,12 +41,14 @@ public:
          return node;
       }
       
-      // Check min constraint (node must be greater than min)
+      // Check min constraint: all nodes in right subtree must be > parent
+      // So if we have a min, this node must be > min
       if (min != nullptr && node->key <= *min) {
          return node;
       }
       
-      // Check max constraint (node must be less than max)
+      // Check max constraint: all nodes in left subtree must be < parent
+      // So if we have a max, this node must be < max
       if (max != nullptr && node->key >= *max) {
          return node;
       }
@@ -56,12 +58,14 @@ public:
       (*visitCount)++;
       
       // Preorder traversal: check left subtree first
+      // Left children must be less than current node
       BSTNode* leftViolation = IsValid(node->left, min, &node->key, visited, visitCount);
       if (leftViolation != nullptr) {
          return leftViolation;
       }
       
       // Then check right subtree
+      // Right children must be greater than current node
       BSTNode* rightViolation = IsValid(node->right, &node->key, max, visited, visitCount);
       if (rightViolation != nullptr) {
          return rightViolation;
@@ -89,3 +93,4 @@ public:
    }
 };
 #endif
+
